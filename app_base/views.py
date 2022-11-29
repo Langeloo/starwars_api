@@ -41,6 +41,10 @@ class ListPlanets(APIView):
         else:
             planets = Planet.objects.all()
         serializer = PlanetSerializer(planets, many=True)
+        for planet in serializer.data:
+            planet["films"] = []
+            for film in Film.objects.filter(planets__name=planet["name"]):
+                planet["films"].append(film.title)
         return Response(serializer.data)
 
 
